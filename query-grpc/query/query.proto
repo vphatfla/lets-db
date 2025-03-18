@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package query;
+
+option go_package = "github.com/vphatfla/lets-db";
+
+message Query {
+  string message = 1;
+}
+
+message Result {
+  string message = 1;
+  string error = 2;
+}
+
+service QueryService {
+    // Process the query and return data result
+    rpc ProcessQuery(Query) returns (Result) {}
+
+    // Server-to-client streaming
+    rpc StreamResult(Query) returns (stream Result) {}
+
+    // Client-to-server streaming 
+    rpc StreamingQuery(stream Query) returns (Result) {}
+
+    // Bi-directional streaming 
+    rpc StreamingBidirec(stream Query) returns (stream Result) {}
+}
