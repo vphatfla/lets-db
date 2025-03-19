@@ -4,7 +4,7 @@
 // - protoc             v5.29.3
 // source: query/query.proto
 
-package lets_db
+package queryService
 
 import (
 	context "context"
@@ -19,10 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	QueryService_ProcessQuery_FullMethodName     = "/query.QueryService/ProcessQuery"
-	QueryService_StreamResult_FullMethodName     = "/query.QueryService/StreamResult"
-	QueryService_StreamingQuery_FullMethodName   = "/query.QueryService/StreamingQuery"
-	QueryService_StreamingBidirec_FullMethodName = "/query.QueryService/StreamingBidirec"
+	QueryService_ProcessQuery_FullMethodName      = "/queryService.QueryService/ProcessQuery"
+	QueryService_StreamResult_FullMethodName      = "/queryService.QueryService/StreamResult"
+	QueryService_StreamingQuery_FullMethodName    = "/queryService.QueryService/StreamingQuery"
+	QueryService_StreamingBidirect_FullMethodName = "/queryService.QueryService/StreamingBidirect"
 )
 
 // QueryServiceClient is the client API for QueryService service.
@@ -36,7 +36,7 @@ type QueryServiceClient interface {
 	// Client-to-server streaming
 	StreamingQuery(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[Query, Result], error)
 	// Bi-directional streaming
-	StreamingBidirec(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[Query, Result], error)
+	StreamingBidirect(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[Query, Result], error)
 }
 
 type queryServiceClient struct {
@@ -89,9 +89,9 @@ func (c *queryServiceClient) StreamingQuery(ctx context.Context, opts ...grpc.Ca
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type QueryService_StreamingQueryClient = grpc.ClientStreamingClient[Query, Result]
 
-func (c *queryServiceClient) StreamingBidirec(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[Query, Result], error) {
+func (c *queryServiceClient) StreamingBidirect(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[Query, Result], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &QueryService_ServiceDesc.Streams[2], QueryService_StreamingBidirec_FullMethodName, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &QueryService_ServiceDesc.Streams[2], QueryService_StreamingBidirect_FullMethodName, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +100,7 @@ func (c *queryServiceClient) StreamingBidirec(ctx context.Context, opts ...grpc.
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type QueryService_StreamingBidirecClient = grpc.BidiStreamingClient[Query, Result]
+type QueryService_StreamingBidirectClient = grpc.BidiStreamingClient[Query, Result]
 
 // QueryServiceServer is the server API for QueryService service.
 // All implementations must embed UnimplementedQueryServiceServer
@@ -113,7 +113,7 @@ type QueryServiceServer interface {
 	// Client-to-server streaming
 	StreamingQuery(grpc.ClientStreamingServer[Query, Result]) error
 	// Bi-directional streaming
-	StreamingBidirec(grpc.BidiStreamingServer[Query, Result]) error
+	StreamingBidirect(grpc.BidiStreamingServer[Query, Result]) error
 	mustEmbedUnimplementedQueryServiceServer()
 }
 
@@ -133,8 +133,8 @@ func (UnimplementedQueryServiceServer) StreamResult(*Query, grpc.ServerStreaming
 func (UnimplementedQueryServiceServer) StreamingQuery(grpc.ClientStreamingServer[Query, Result]) error {
 	return status.Errorf(codes.Unimplemented, "method StreamingQuery not implemented")
 }
-func (UnimplementedQueryServiceServer) StreamingBidirec(grpc.BidiStreamingServer[Query, Result]) error {
-	return status.Errorf(codes.Unimplemented, "method StreamingBidirec not implemented")
+func (UnimplementedQueryServiceServer) StreamingBidirect(grpc.BidiStreamingServer[Query, Result]) error {
+	return status.Errorf(codes.Unimplemented, "method StreamingBidirect not implemented")
 }
 func (UnimplementedQueryServiceServer) mustEmbedUnimplementedQueryServiceServer() {}
 func (UnimplementedQueryServiceServer) testEmbeddedByValue()                      {}
@@ -193,18 +193,18 @@ func _QueryService_StreamingQuery_Handler(srv interface{}, stream grpc.ServerStr
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type QueryService_StreamingQueryServer = grpc.ClientStreamingServer[Query, Result]
 
-func _QueryService_StreamingBidirec_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(QueryServiceServer).StreamingBidirec(&grpc.GenericServerStream[Query, Result]{ServerStream: stream})
+func _QueryService_StreamingBidirect_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(QueryServiceServer).StreamingBidirect(&grpc.GenericServerStream[Query, Result]{ServerStream: stream})
 }
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type QueryService_StreamingBidirecServer = grpc.BidiStreamingServer[Query, Result]
+type QueryService_StreamingBidirectServer = grpc.BidiStreamingServer[Query, Result]
 
 // QueryService_ServiceDesc is the grpc.ServiceDesc for QueryService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var QueryService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "query.QueryService",
+	ServiceName: "queryService.QueryService",
 	HandlerType: (*QueryServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -224,8 +224,8 @@ var QueryService_ServiceDesc = grpc.ServiceDesc{
 			ClientStreams: true,
 		},
 		{
-			StreamName:    "StreamingBidirec",
-			Handler:       _QueryService_StreamingBidirec_Handler,
+			StreamName:    "StreamingBidirect",
+			Handler:       _QueryService_StreamingBidirect_Handler,
 			ServerStreams: true,
 			ClientStreams: true,
 		},
