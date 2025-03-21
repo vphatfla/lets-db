@@ -20,9 +20,9 @@ service QueryService {
     // Server-to-client streaming
     rpc StreamResult(Query) returns (stream Result) {}
 
-    // Client-to-server streaming 
+    // Client-to-server streaming
     rpc StreamingQuery(stream Query) returns (Result) {}
 
-    // Bi-directional streaming 
+    // Bi-directional streaming
     rpc StreamingBidirect(stream Query) returns (stream Result) {}
 }
