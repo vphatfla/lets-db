@@ -24,7 +24,7 @@
 
 7. Result Formatter: Pending
 
-## User Manual: 
+## User Manual:
 
 ### To run all tests, cd to the repo root directory then run:
 
