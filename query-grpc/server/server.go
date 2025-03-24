@@ -38,12 +38,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	grpcServer := grpc.NewServer()
 
 	pb.RegisterQueryServiceServer(grpcServer, newServer())
-	
+
 	log.Printf("GRPC Serve and Listen on port %d", *port)
 	grpcServer.Serve(lis)
-	
+
 }
