@@ -39,9 +39,10 @@ func insertQuery(client pb.QueryServiceClient, m string) {
 	q := &pb.Query{Message: m}
 
 	if res, err := client.Insert(ctx, q); err != nil {
-		log.Fatalf("Error for an insert query -> %v \n", err)
+		log.Println(res.Message)
+		log.Fatalln("Error for an insert query ->", err)
 	} else {
-		log.Printf("Result = %v \n", res)
+		log.Println(res.Message)
 	}
 }
 func main() {

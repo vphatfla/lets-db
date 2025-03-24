@@ -4,29 +4,32 @@ import (
 	"fmt"
 
 	"github.com/vphatfla/lets-db/db/engine"
-	"github.com/vphatfla/lets-db/db/output"
+	"github.com/vphatfla/lets-db/db/formatter"
 )
 
 type IOInsertHandler struct {
 }
 
-func (h *IOInsertHandler) Execute(key string, value string) error {
+func (h *IOInsertHandler) Execute(key string, value string) (formatter.Output, error) {
 	if engine.Table == nil {
-		e := fmt.Errorf("Error table db engine is nil")
-		output.PrintOutputWithError(e)
-		return 	e
+		e := &formatter.Error{}
+		err := fmt.Errorf("Error table db engine is nil")
+		e.Format("Insert", key, value, err.Error())
+		return  e, err
 	}
 
 	if _, exists := engine.Table[key]; exists {
 		// key, value existed, override now
-		output.PrintOutput(fmt.Sprintf("Key existed, override, wrote %d ", len([]byte(value))))
+		engine.Table[key]= value
+		r := &formatter.Result{}
+		comment := fmt.Sprintf("Key existed, override, wrote %d bytes", len([]byte(value)))
+		r.Format("Insert", key, value, comment)
+		return r, nil
 	} else {
 		engine.Table[key] = value
-		output.PrintOutput(fmt.Sprintf("Key NOT exist, wrote %d, value = %s ", len([]byte(value)), value))
+		r := &formatter.Result{}
+		comment := fmt.Sprintf("Key NOT exist, wrote %d bytes", len([]byte(value)))
+		r.Format("Insert", key, value, comment)
+		return r, nil
 	}
-
-	return nil
-
 }
-// func Insert(key string, value string) error {
-// }

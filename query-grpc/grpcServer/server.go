@@ -28,10 +28,12 @@ func (s* QuerySeviceServer) Insert (_ context.Context, query *pb.Query) (*pb.Res
 		return nil, fmt.Errorf("Error parsing insert query -> %v \n", err)
 	}
 
-	if	err :=	h.Execute(key, value); err != nil {
+	if output, err := h.Execute(key, value); err != nil {
 		return nil, fmt.Errorf("Erroring executing IO insert with query %s -> error = %v", query.Message, err)
+	} else {
+		log.Println("Output = ", output.GetOutput())
+		return &pb.Result{Message: output.GetOutput()}, nil
 	}
-	return &pb.Result{Message: "Successed, pending result format"}, nil
 }
 
 func NewServer() *QuerySeviceServer {

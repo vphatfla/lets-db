@@ -4,26 +4,32 @@ import (
 	"fmt"
 
 	"github.com/vphatfla/lets-db/db/engine"
-	"github.com/vphatfla/lets-db/db/output"
+	"github.com/vphatfla/lets-db/db/formatter"
 )
 type IODeleteHandler struct {
 }
 
-func (h *IODeleteHandler) Execute(key string, value string) error {
+func (h *IODeleteHandler) Execute(key string, value string) (formatter.Output, error) {
 	if engine.Table == nil {
-		e := fmt.Errorf("Error table db engine is nil")
-		output.PrintOutputWithError(e)
-		return 	e
+		e := &formatter.Error{}
+		err := fmt.Errorf("Error table db engine is nil")
+		e.Format("Delete", key, value, err.Error())
+		return  e, err
 	}
 
-	if value, exists := engine.Table[key]; exists {
+
+	if v, exists := engine.Table[key]; exists {
 		// key, value existed, override now
-		output.PrintOutput(fmt.Sprintf("Key existed, override, wrote %d ", len([]byte(value))))
+		delete(engine.Table, key)
+		r := &formatter.Result{}
+		comment := fmt.Sprintf("Key existed, deleted %d bytes", len([]byte(v)) + len([]byte(key)))
+		r.Format("Delete", key, value, comment)
+		return r, nil
 	} else {
-		engine.Table[key] = value
-		output.PrintOutput(fmt.Sprintf("Key NOT exist, wrote %d ", len([]byte(value))))
+		e := &formatter.Error{}
+		err := fmt.Errorf("Key %s does not exist", key)
+		e.Format("Delete", key, value, err.Error())
+		return e, err
 	}
-
-	return nil
 }
 
