@@ -20,6 +20,9 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	QueryService_ProcessQuery_FullMethodName      = "/queryService.QueryService/ProcessQuery"
+	QueryService_Insert_FullMethodName            = "/queryService.QueryService/Insert"
+	QueryService_Select_FullMethodName            = "/queryService.QueryService/Select"
+	QueryService_Delete_FullMethodName            = "/queryService.QueryService/Delete"
 	QueryService_StreamResult_FullMethodName      = "/queryService.QueryService/StreamResult"
 	QueryService_StreamingQuery_FullMethodName    = "/queryService.QueryService/StreamingQuery"
 	QueryService_StreamingBidirect_FullMethodName = "/queryService.QueryService/StreamingBidirect"
@@ -31,6 +34,12 @@ const (
 type QueryServiceClient interface {
 	// Process the query and return data result
 	ProcessQuery(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Result, error)
+	// Insert query func, return data message
+	Insert(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Result, error)
+	// Select query func, return data message
+	Select(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Result, error)
+	// Delete query func, return data message
+	Delete(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Result, error)
 	// Server-to-client streaming
 	StreamResult(ctx context.Context, in *Query, opts ...grpc.CallOption) (grpc.ServerStreamingClient[Result], error)
 	// Client-to-server streaming
@@ -51,6 +60,36 @@ func (c *queryServiceClient) ProcessQuery(ctx context.Context, in *Query, opts .
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(Result)
 	err := c.cc.Invoke(ctx, QueryService_ProcessQuery_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryServiceClient) Insert(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Result, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Result)
+	err := c.cc.Invoke(ctx, QueryService_Insert_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryServiceClient) Select(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Result, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Result)
+	err := c.cc.Invoke(ctx, QueryService_Select_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryServiceClient) Delete(ctx context.Context, in *Query, opts ...grpc.CallOption) (*Result, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(Result)
+	err := c.cc.Invoke(ctx, QueryService_Delete_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,6 +147,12 @@ type QueryService_StreamingBidirectClient = grpc.BidiStreamingClient[Query, Resu
 type QueryServiceServer interface {
 	// Process the query and return data result
 	ProcessQuery(context.Context, *Query) (*Result, error)
+	// Insert query func, return data message
+	Insert(context.Context, *Query) (*Result, error)
+	// Select query func, return data message
+	Select(context.Context, *Query) (*Result, error)
+	// Delete query func, return data message
+	Delete(context.Context, *Query) (*Result, error)
 	// Server-to-client streaming
 	StreamResult(*Query, grpc.ServerStreamingServer[Result]) error
 	// Client-to-server streaming
@@ -126,6 +171,15 @@ type UnimplementedQueryServiceServer struct{}
 
 func (UnimplementedQueryServiceServer) ProcessQuery(context.Context, *Query) (*Result, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProcessQuery not implemented")
+}
+func (UnimplementedQueryServiceServer) Insert(context.Context, *Query) (*Result, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Insert not implemented")
+}
+func (UnimplementedQueryServiceServer) Select(context.Context, *Query) (*Result, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Select not implemented")
+}
+func (UnimplementedQueryServiceServer) Delete(context.Context, *Query) (*Result, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedQueryServiceServer) StreamResult(*Query, grpc.ServerStreamingServer[Result]) error {
 	return status.Errorf(codes.Unimplemented, "method StreamResult not implemented")
@@ -175,6 +229,60 @@ func _QueryService_ProcessQuery_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _QueryService_Insert_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Query)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServiceServer).Insert(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: QueryService_Insert_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServiceServer).Insert(ctx, req.(*Query))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _QueryService_Select_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Query)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServiceServer).Select(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: QueryService_Select_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServiceServer).Select(ctx, req.(*Query))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _QueryService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Query)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServiceServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: QueryService_Delete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServiceServer).Delete(ctx, req.(*Query))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _QueryService_StreamResult_Handler(srv interface{}, stream grpc.ServerStream) error {
 	m := new(Query)
 	if err := stream.RecvMsg(m); err != nil {
@@ -210,6 +318,18 @@ var QueryService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ProcessQuery",
 			Handler:    _QueryService_ProcessQuery_Handler,
+		},
+		{
+			MethodName: "Insert",
+			Handler:    _QueryService_Insert_Handler,
+		},
+		{
+			MethodName: "Select",
+			Handler:    _QueryService_Select_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _QueryService_Delete_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 
+	"github.com/vphatfla/lets-db/db/engine"
 	"github.com/vphatfla/lets-db/query-grpc/grpcServer"
 	pb "github.com/vphatfla/lets-db/query-grpc/query"
 	"google.golang.org/grpc"
@@ -17,6 +18,8 @@ var (
 
 func main() {
 	log.Println("Starting the DB server")
+
+	engine.InitTableDB()
 
 	flag.Parse()
 

@@ -17,6 +17,15 @@ service QueryService {
     // Process the query and return data result
     rpc ProcessQuery(Query) returns (Result) {}
 
+    // Insert query func, return data message
+    rpc Insert(Query) returns (Result) {}
+
+    // Select query func, return data message
+    rpc Select(Query) returns (Result) {}
+
+    // Delete query func, return data message
+    rpc Delete(Query) returns (Result) {}
+
     // Server-to-client streaming
     rpc StreamResult(Query) returns (stream Result) {}
 

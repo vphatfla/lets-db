@@ -20,26 +20,44 @@ func sendQuery(client pb.QueryServiceClient, message string) {
 	defer cancel()
 
 	q := &pb.Query{Message: message}
-		
+
 	res, err := client.ProcessQuery(ctx, q)
-	
+
 	if err != nil {
 		log.Fatalf("Error processing query %v \n", err)
 	}
 
 	log.Printf("Result = %v \n", res)
 }
+
+func insertQuery(client pb.QueryServiceClient, m string) {
+	log.Printf("Sending insert query, message = %s \n", m)
+
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	q := &pb.Query{Message: m}
+
+	if res, err := client.Insert(ctx, q); err != nil {
+		log.Fatalf("Error for an insert query -> %v \n", err)
+	} else {
+		log.Printf("Result = %v \n", res)
+	}
+}
 func main() {
 	flag.Parse()
-	
+
 	conn, err := grpc.NewClient(*serverAddr, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatalf("Failed to connect %v \n", err )
 	}
 	defer conn.Close()
-	
+
 	client := pb.NewQueryServiceClient(conn)
 
 	// print hello world
 	sendQuery(client, "Hello World gRPC!!!")
+
+	// send insert query
+	insertQuery(client, "insert abc value 123")
 }

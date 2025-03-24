@@ -17,12 +17,12 @@ func (h *IOInsertHandler) Execute(key string, value string) error {
 		return 	e
 	}
 
-	if value, exists := engine.Table[key]; exists {
+	if _, exists := engine.Table[key]; exists {
 		// key, value existed, override now
 		output.PrintOutput(fmt.Sprintf("Key existed, override, wrote %d ", len([]byte(value))))
 	} else {
 		engine.Table[key] = value
-		output.PrintOutput(fmt.Sprintf("Key NOT exist, wrote %d ", len([]byte(value))))
+		output.PrintOutput(fmt.Sprintf("Key NOT exist, wrote %d, value = %s ", len([]byte(value)), value))
 	}
 
 	return nil
